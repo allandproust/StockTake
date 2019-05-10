@@ -26,6 +26,7 @@ def FindCode(code):
         else:
             found=True # found instance
             print(code," : stock found")
+            lblCode.configure(text="Scanned : "+code)
             if ws.cell(row=x+1, column=17).value is None: # checking total to zero
                 ws.cell(row=x+1, column=16).value = code
                 ws.cell(row=x+1, column=17).value = 1 # if zero then total = 1
@@ -39,12 +40,13 @@ def FindCode(code):
     if found==False:
         print("setting Found to false")
         messagebox.showinfo("Excess Stock","Stock found Excess, Please keep aside")
-        
+        lblExcess.configure(text="Scanned : "+code)
+        lblCode.configure(text="")
             
 def ChkCode():
     txtCode.focus()
     scanned=txtCode.get()
-    lblCode.configure(text="Scanned : "+scanned)
+    #lblCode.configure(text="Scanned : "+scanned)
     FindCode(scanned)
     txtCode.delete(0, END)
 

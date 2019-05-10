@@ -12,24 +12,34 @@ window.geometry('400x500')
 window.title("Stock Take")
 
 found=False # intialize stock found status to false
+print("initialized Found to false")
 Add_code_col=ws["I"] # Column to be searched
 
 #FUNCTION FOR FINDING CODE
 def FindCode(code):
+    print("Found is false")
+    print("entering loop")
     for x in range(len(Add_code_col)): # getting column range
-        #print("Finding scanned : ",x)
-        if code==Add_code_col[x].value: # comparing result
-            print("Stock found at : ",x)
+        if code!=Add_code_col[x].value: # comparing result
+            print(code," : stock not found")
+            found=False
+        else:
             found=True # found instance
+            print(code," : stock found")
             if ws.cell(row=x+1, column=17).value is None: # checking total to zero
-                #print("Found New : ",x)
                 ws.cell(row=x+1, column=16).value = code
                 ws.cell(row=x+1, column=17).value = 1 # if zero then total = 1
+                print("Writing new")
             else:
-                #print("Found Another : ",x)
                 ws.cell(row=x+1, column=16).value = code
                 ws.cell(row=x+1, column=17).value = ws.cell(row=x+1, column=17).value+1 # if not zero total + 1
+                print("Writing old")
+            print("breaking loop")
             break
+    if found==False:
+        print("setting Found to false")
+        messagebox.showinfo("Excess Stock","Stock found Excess, Please keep aside")
+        
             
 def ChkCode():
     txtCode.focus()
@@ -74,10 +84,7 @@ lblExcess.grid(column=0,row=4)
 window.bind('<Return>', (lambda e, btnNext=btnNext: btnNext.invoke())) # b is your button
 window.mainloop()
 
-print("Scanning done") #scanned ten times
-print("Saving file")
 wb.save(fPath)
-print("You can exit now")
 
 #--------------------------------------------------------------------------------------------------------------    
 ##    for x in range(len(Add_code_col)): # getting column range

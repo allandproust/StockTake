@@ -1,14 +1,18 @@
 from tkinter import *
 from tkinter import messagebox
 from openpyxl import load_workbook # importing workbook module
+import winsound
+import os
 
 fPath=r"C:\Users\arvind\Desktop\StockTake.xlsx"  # Setting File path
+
 wb=load_workbook(fPath) #loading workbook in memory
 ws=wb.active # setting active worksheet
+fExcess=open(r"C:\Users\arvind\Desktop\StockExcess.txt","a")
 
 # drawing window
 window=Tk()
-window.geometry("400x300")
+window.geometry("500x400")
 #-----------------------------------------------
 windowWidth = window.winfo_reqwidth()
 windowHeight = window.winfo_reqheight()
@@ -34,6 +38,10 @@ saved=False # Intilized saved to false
 Add_code_col=ws["I"] # Additional item code Column to be searched
 item_code_col=ws["H"] # Item code Column to be searched
 
+# setting beep sound freq
+freq=440
+duration=1000
+
 # CHECK FOR STOCK MINUS
 #---------------------------------------------------------------------------------------------------------------
 def CheckDiff(Rw): # Checking difference of found and Total qty
@@ -50,12 +58,15 @@ def CheckDiff(Rw): # Checking difference of found and Total qty
 #---------------------------------------------------------------------------------------------------------------
 def StockStatus(code,status):
     if status=="excess":
+        winsound.Beep(freq,duration) # Play warning beep
         messagebox.showinfo("Excess Stock","Stock found Excess, Please keep aside")
-        lblExcess.configure(text="Scanned : "+ code)
+        lblExcess.configure(text=" Excess Scanned : "+ code)
         lblCode.configure(text="")
+        fExcess.write(code+"\t1\n")
     elif status=="short":
+        winsound.Beep(freq,duration) # Play warning beep
         messagebox.showinfo("Stock not Found","Stock not inwarded, Please keep aside")
-        lblExcess.configure(text="Scanned : "+ code)
+        lblExcess.configure(text="Short Scanned : "+ code)
         lblCode.configure(text="")
 
 #FUNCTION FOR FINDING CODE
@@ -66,11 +77,11 @@ def FindCode(code):
             found=False # not found skip to last of loop
         else:
             found=True # found instance
-            lblCode.configure(text="Scanned : "+ code) # set label text with bar code 
+            lblCode.configure(text="Last Scanned : "+ code) # set label text with bar code 
             if ws.cell(row=Rw+1, column=17).value is None: # checking total to zero
                 ws.cell(row=Rw+1, column=16).value = code # Set bar code to column bar code
                 ws.cell(row=Rw+1, column=17).value = 1 # if zero then set found column total to 1
-                CheckDiff(Rw+1) # calculate minus and set column difference 
+                CheckDiff(Rw+1) # calculate minus and set column difference
             else:
                 # get Qty from col=11, compare result and if excess show call StockStatus()
                 if ws.cell(row=Rw+1,column=11).value != ws.cell(row=Rw+1,column=17).value:
@@ -85,9 +96,11 @@ def FindCode(code):
                         ws.cell(row=Rw+1, column=18).value = ws.cell(row=Rw+1, column=18).value+1 # if not zero total + 1
                         CheckDiff(Rw+1)
                     lblExcessCount.configure(text="Excess Count : "+ str(ws.cell(row=Rw+1, column=18).value))
+            lblScanCounter.configure(text=Rw)# Set abel
             break
     if found==False: # stock not found
         StockStatus(code,"short")
+       
 #---------------------------------------------------------------------------------------------------------------           
 def ChkCode(): # calling main function
     txtCode.focus()
@@ -97,6 +110,7 @@ def ChkCode(): # calling main function
 
 def SaveTake():# Saving the stocktake in between
     wb.save(fPath)
+    fExcess.close()
     saved=True
     messagebox.showinfo("Save Stock Take", "File Saved ")
     
@@ -110,18 +124,18 @@ def QuitApp(): #Saving and completely quitting app
 window.protocol("WM_DELETE_WINDOW", QuitApp)   
 # GUI layout
 #---------------------------------------------------------------------------------------------------------------
-lblScan=Label(window,text="Scan the Bar code")
+lblScan=Label(window,text="Scan the Bar code: ")
 lblScan.grid(column=0,row=0)
 
-lblCode=Label(window,text="---")
-lblCode.grid(column=0,row=1)
+lblCode=Label(window,text="8907233000000")
+lblCode.grid(column=1,row=0)
 
 txtCode=Entry(window,width=30)
-txtCode.grid(column=0,row=2)
+txtCode.grid(column=0,row=1)
 txtCode.focus_set()
 
 btnNext=Button(window,text="Next barcode",command=ChkCode)
-btnNext.grid(column=1,row=2)
+btnNext.grid(column=1,row=1)
 
 btnSave=Button(window,text="Save StockTake",command=SaveTake)
 btnSave.grid(column=0,row=3)
@@ -129,11 +143,18 @@ btnSave.grid(column=0,row=3)
 btnQuit=Button(window,text="Quit",command=QuitApp,padx=10)
 btnQuit.grid(column=1,row=3)
 
-lblExcess=Label(window,text="---")
+lblExcess=Label(window,text="Excess count : ")
 lblExcess.grid(column=0,row=4)
 
-lblExcessCount=Label(window,text="---")
+lblExcessCount=Label(window,text="0")
 lblExcessCount.grid(column=1,row=4)
+
+lblCount=Label(window,text="Scan Count : ")
+lblCount.grid(column=0,row=5)
+
+lblScanCounter=Label(window,text="0")
+lblScanCounter.grid(column=1,row=5)
+
 #---------------------------------------------------------------------------------------------------------------
 
 # keeping default focus on Next button

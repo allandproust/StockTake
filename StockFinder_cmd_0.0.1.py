@@ -1,5 +1,7 @@
 from openpyxl import load_workbook # importing workbook module
-fPath=r"C:\Users\arvind\Desktop\StockTake.xlsx"  # Setting File path
+import os
+
+fPath=os.path.join(os.getcwd(),"StockTake.xlsx")  # Setting File path
 
 wb=load_workbook(fPath) #loading workbook in memory
 ws=wb.active # setting active worksheet

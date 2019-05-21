@@ -4,11 +4,15 @@ from openpyxl import load_workbook # importing workbook module
 import winsound
 import os
 
-fPath=r"C:\Users\arvind\Desktop\StockTake.xlsx"  # Setting File path
+foldPath=os.getcwd() # Setting current folder path
+StockFile="Stocktake.xlsx" # set the file name to your Stock file
+fPath=os.path.join(foldPath,StockFile)
 
 wb=load_workbook(fPath) #loading workbook in memory
 ws=wb.active # setting active worksheet
-fExcess=open(r"C:\Users\arvind\Desktop\StockExcess.txt","a")
+
+fExcess=open(os.path.join(foldPath,"StockExcess.txt"),"a")
+fNoInward=open(os.path.join(foldPath,"NotInwardFile.txt"),"a")
 
 # drawing window
 window=Tk()
@@ -25,7 +29,7 @@ positionDown = int(window.winfo_screenheight()/2 - windowHeight)
 window.geometry("+{}+{}".format(positionRight, positionDown))
 #-------------------------------------------------------------
 window.title("Stock Take")
-window.wm_iconbitmap(r"C:\Users\arvind\Desktop\StockFinder\FindIcon.ico")
+#window.wm_iconbitmap(r"C:\Users\MNM\Desktop\Stocktake\FindIcon.ico")
 
 # set the 3rd row heading value
 ws.cell(row=3,column=16).value=" Bar Code"
@@ -68,6 +72,7 @@ def StockStatus(code,status):
         messagebox.showinfo("Stock not Found","Stock not inwarded, Please keep aside")
         lblExcess.configure(text="Short Scanned : "+ code)
         lblCode.configure(text="")
+        fNoInward.write(code+"\t1\n")
 
 #FUNCTION FOR FINDING CODE
 #---------------------------------------------------------------------------------------------------------------

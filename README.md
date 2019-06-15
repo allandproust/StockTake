@@ -1,0 +1,2 @@
+# StockTake
+code for stocktake

@@ -13,14 +13,14 @@ Usage --
 
 Open Stocktake.py
 Select file for stocktake
-select columns to be searched
-set column of quatity total to match with found
-set column for Found,Excess and Short
-start scanning.
+Select columns to be searched
+Set column of quatity total to match with found
+Set 3 column for Found,Excess and Short
+Start scanning.
 
-found will be updated with quantity found.
-will notify if excess is found
-row will be highlighted for found stock.
-save you staocktake and open excel file to have look.
+Found will be updated with quantity found.
+Will notify if excess is found
+Row will be highlighted for found stock.
+Save you stocktake and open excel file to have look.
 
-currently supporting only '.xlsx' excel format
+Currently supporting only '.xlsx' excel format

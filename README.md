@@ -1,5 +1,5 @@
 # StockTake
-
+Can be used for small format retail stores.
 Instead of finding stock codes manually from excel sheet, use this python interface for scanning in code to find the instance or instances in multiple columns.
 
 Requirements:
